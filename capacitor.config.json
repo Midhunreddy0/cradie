@@ -1,0 +1,15 @@
+{
+  "appId": "com.smartcradle.app",
+  "appName": "SmartCradle",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 900,
+      "backgroundColor": "#14213d",
+      "showSpinner": false
+    }
+  }
+}

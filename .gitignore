@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Node & Capacitor Staging
+node_modules/
+www/
+npm-debug.log*
+
+# Android Build Artifacts (keep android/ project & custom manifest/icons in git)
+android/.gradle/
+android/build/
+android/app/build/
+android/captures/
+android/local.properties
+android/.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db

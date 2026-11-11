@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#14213d">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>SmartCradle — Intelligent Infant Health &amp; Safety</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- Apple-Inspired Top Menu Bar / Floating Island -->
+    <header class="app-menubar glass-bar">
+        <div class="menubar-inner">
+            <!-- Left: Brand & Status -->
+            <div class="menubar-left">
+                <div class="menubar-brand" onclick="switchView('dashboard')">
+                    <div class="brand-glyph">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="8.5"/>
+                            <path d="M8.5 10h.01M15.5 10h.01M9 14c.8 1 1.8 1.5 3 1.5s2.2-.5 3-1.5"/>
+                            <path d="M8 5.5 6.5 3.8M16 5.5l1.5-1.7"/>
+                        </svg>
+                    </div>
+                    <div class="brand-label">
+                        <span class="brand-title">SmartCradle</span>
+                        <span class="brand-version">Pro Vision</span>
+                    </div>
+                </div>
+
+                <div class="system-status-pill" id="system-status-pill">
+                    <span class="status-pulse-dot"></span>
+                    <span id="system-status-text" class="status-pill-text">MONITORING</span>
+                </div>
+            </div>
+
+            <!-- Center: Segmented Navigation Dock -->
+            <nav class="menubar-center">
+                <div class="nav-segmented-dock" role="tablist">
+                    <button class="dock-tab active" data-view="dashboard" onclick="switchView('dashboard')">
+                        <span class="dock-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+                        <span class="dock-label">Dashboard</span>
+                    </button>
+                    <button class="dock-tab" data-view="camera" onclick="switchView('camera')">
+                        <span class="dock-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></svg></span>
+                        <span class="dock-label">Camera</span>
+                    </button>
+                    <button class="dock-tab" data-view="sensors" onclick="switchView('sensors')">
+                        <span class="dock-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7a5 5 0 1 0 5 5"/><circle cx="12" cy="12" r="1"/><path d="M19 3v5M16.5 5.5h5"/></svg></span>
+                        <span class="dock-label">Sensors</span>
+                    </button>
+                    <button class="dock-tab" data-view="motor" onclick="switchView('motor')">
+                        <span class="dock-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 12V3m0 9 8 4M12 12l-8 4"/><circle cx="12" cy="12" r="2"/><path d="M12 3a3 3 0 0 1 3 3v2h-6V6a3 3 0 0 1 3-3ZM20 16a3 3 0 0 1 1.1 4.1l-1 1.7-5.2-3 1-1.7A3 3 0 0 1 20 16ZM4 16a3 3 0 0 0-1.1 4.1l1 1.7 5.2-3-1-1.7A3 3 0 0 0 4 16Z"/></svg></span>
+                        <span class="dock-label">Motor</span>
+                    </button>
+                    <button class="dock-tab" data-view="sleep" onclick="switchView('sleep')">
+                        <span class="dock-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 8.5 8.5 0 1 0 20.5 14.5Z"/><path d="m17 3 .7 2.3L20 6l-2.3.7L17 9l-.7-2.3L14 6l2.3-.7L17 3Z"/></svg></span>
+                        <span class="dock-label">Sleep &amp; Health</span>
+                    </button>
+                    <button class="dock-tab" data-view="alerts" onclick="switchView('alerts')">
+                        <span class="dock-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 9h8M8 12h8M8 15h5"/><path d="m2 8 2-2m18 2-2-2"/></svg></span>
+                        <span class="dock-label">Activity</span>
+                        <span id="alert-counter-badge" class="alert-badge-count" style="display: none;">0</span>
+                    </button>
+                    <button class="dock-tab" data-view="more" onclick="switchView('more')">
+                        <span class="dock-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></span>
+                        <span class="dock-label">More</span>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Right: Dark/Light Mode, User Profile, Quick Menu -->
+            <div class="menubar-right">
+                <!-- Theme Switcher (Dark / Light Mode) -->
+                <button class="menu-icon-btn" id="theme-toggle-btn" onclick="toggleTheme()" title="Switch Dark / Light Mode" aria-label="Toggle Theme">
+                    <span id="theme-icon">&#9789;</span>
+                </button>
+
+                <!-- Notifications Drawer Button -->
+                <button class="menu-icon-btn" onclick="switchView('alerts')" title="View Notifications" aria-label="Notifications">
+                    <span class="bell-icon">&#128276;</span>
+                </button>
+
+                <!-- User Profile Pill -->
+                <div class="user-profile-button" onclick="openAuthModal()" title="Caregiver Account Settings">
+                    <div class="user-avatar-circle" id="nav-user-avatar">SM</div>
+                    <span class="user-display-name" id="nav-user-name">Sarah</span>
+                    <span class="caret-symbol">&#9662;</span>
+                </div>
+
+                <!-- Quick Action Menu Dropdown Toggle -->
+                <div class="quick-menu-container">
+                    <button class="menu-icon-btn" onclick="toggleQuickMenu()" title="Quick Actions" aria-label="Menu">
+                        <span>&#8942;</span>
+                    </button>
+                    <div class="quick-dropdown glass-card" id="quick-dropdown" style="display: none;">
+                        <a href="javascript:void(0)" onclick="handleGuestDemo(); toggleQuickMenu();" class="dropdown-item">&#128106; 1-Click Guest Demo</a>
+                        <a href="javascript:void(0)" onclick="switchView('sleep'); toggleQuickMenu();" class="dropdown-item">&#128564; Sleep Analytics</a>
+                        <a href="javascript:void(0)" onclick="switchView('more'); toggleQuickMenu();" class="dropdown-item">&#9881; Cradle Preferences</a>
+                        <a href="javascript:void(0)" onclick="resetSystem(); toggleQuickMenu();" class="dropdown-item">&#128260; Reset Cradle State</a>
+                        <a href="javascript:void(0)" onclick="toggleFullscreen(); toggleQuickMenu();" class="dropdown-item">&#9974; Fullscreen Mode</a>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-notice">
+                            <strong>Demo:</strong> Sensor readings, camera effects, and motor actions are simulated.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="app-workspace">
+
+        <div id="connection-banner" class="connection-banner connecting" role="status" aria-live="polite">
+            <span class="connection-dot"></span><span id="connection-banner-text">Connecting to demo server…</span>
+        </div>
+        <div id="parent-alert-banner" class="parent-alert-banner" role="alert" aria-live="assertive" hidden>
+            <span class="parent-alert-mark">!</span>
+            <div class="parent-alert-copy"><strong id="parent-alert-title">New demo alert</strong><span id="parent-alert-message"></span></div>
+            <button type="button" class="parent-alert-link" onclick="switchView('alerts')">Open activity</button>
+            <button type="button" class="parent-alert-dismiss" aria-label="Dismiss alert" onclick="dismissParentAlert()">&times;</button>
+        </div>
+
+        <!-- Discreet, Non-Intrusive Apple-Style Disclaimer Notice -->
+        <div class="subtle-notice-bar glass-card">
+            <span class="notice-tag">PROTOTYPE SIMULATION</span>
+            <span class="notice-desc">Camera effects and health values are illustrative. Sensors, alarms, and motor actions are simulated for this demo.</span>
+        </div>
+
+        <!-- Dynamic SPA Views Container -->
+        <main class="content-stage">
+
+            <!-- ================= VIEW 1: DASHBOARD ================= -->
+            <section id="view-dashboard" class="spa-view active">
+                <div class="section-intro">
+                    <div>
+                        <h1 class="view-title">Dashboard</h1>
+                        <p class="view-desc">At-a-glance status for <strong id="parent-child-name">your child</strong>. Every reading and action here is simulated.</p>
+                    </div>
+                    <div class="hero-actions">
+                        <button class="btn btn-pink-outline" id="notification-toggle" onclick="enableParentNotifications()">Enable device alerts</button>
+                        <button class="btn btn-hero-pink" onclick="switchView('camera')">
+                            &#128249; Open Camera
+                        </button>
+                    </div>
+                </div>
+
+                <div class="apple-grid">
+                    <!-- Hero Motor Card -->
+                    <div class="apple-card glass-card hero-widget">
+                        <div class="card-top">
+                            <span class="sub-heading">Cradle motor</span>
+                            <span class="badge badge-sim">SIMULATED</span>
+                        </div>
+                        <div class="widget-main">
+                            <div class="motor-hero-info">
+                                <span class="hero-title" id="dash-motor-state">Motor Stopped</span>
+                                <span class="hero-sub" id="dash-motor-sub">Auto Mode &bull; Activates on infant cry</span>
+                            </div>
+                            <div class="power-toggle-widget">
+                                <button id="dash-motor-power-btn" class="apple-power-btn" onclick="quickToggleMotor()" title="Quick Power Toggle">
+                                    &#9211;
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-bottom">
+                            <span class="card-footnote">Automatic soothing initiates servo swing sequence</span>
+                            <button class="link-btn" onclick="switchView('motor')">Controls &rarr;</button>
+                        </div>
+                    </div>
+
+                    <!-- Room Camera Vision Mini-Feed -->
+                    <div class="apple-card glass-card camera-mini-widget">
+                        <div class="card-top">
+                            <span class="sub-heading">Camera preview</span>
+                            <span class="badge badge-sim">DEMO IMAGE</span>
+                        </div>
+                        <button type="button" class="mini-viewfinder-box" onclick="switchView('camera')" aria-label="Open the Camera page">
+                            <img class="mini-viewfinder-image" src="/static/images/dashboard-camera-preview.png" alt="Illustrative nursery camera preview. This demo image is not a live camera feed." loading="lazy">
+                        </button>
+                        <div class="card-bottom">
+                            <span class="card-footnote">Illustrative image &middot; not a live feed</span>
+                            <button class="link-btn" onclick="switchView('camera')">Open Camera &rarr;</button>
+                        </div>
+                    </div>
+
+                    <!-- Sensor Metrics Cluster -->
+                    <div class="apple-card glass-card span-2 metrics-cluster-card">
+                        <div class="card-top">
+                            <span class="sub-heading">CHILD STATUS</span>
+                            <span class="badge badge-sim">SIMULATED SENSORS</span>
+                        </div>
+                        <div class="metrics-quad-grid">
+                            <!-- Acoustic Cry Sensor -->
+                            <div class="metric-quad-box" onclick="switchView('sensors')">
+                                <div class="quad-header">
+                                    <span class="quad-icon">&#128546;</span>
+                                    <span class="quad-label">Acoustic Cry</span>
+                                </div>
+                                <div class="quad-value" id="dash-cry-val">Quiet</div>
+                                <span class="quad-status" id="dash-cry-tag">[NORMAL]</span>
+                            </div>
+
+                            <!-- Baby Movement -->
+                            <div class="metric-quad-box" onclick="switchView('sensors')">
+                                <div class="quad-header">
+                                    <span class="quad-icon">&#128062;</span>
+                                    <span class="quad-label">Infant Movement</span>
+                                </div>
+                                <div class="quad-value" id="dash-move-val">Still</div>
+                                <span class="quad-status" id="dash-move-tag">[SLEEPING]</span>
+                            </div>
+
+                            <!-- Temperature -->
+                            <div class="metric-quad-box" onclick="switchView('sensors')">
+                                <div class="quad-header">
+                                    <span class="quad-icon">&#127777;</span>
+                                    <span class="quad-label">Temperature</span>
+                                </div>
+                                <div class="quad-value" id="dash-temp-val">27.0&deg;C</div>
+                                <span class="quad-status" id="dash-temp-tag">[OPTIMAL]</span>
+                            </div>
+
+                            <!-- Bedding Wetness & Buzzer -->
+                            <div class="metric-quad-box" onclick="switchView('sensors')">
+                                <div class="quad-header">
+                                    <span class="quad-icon">&#128167;</span>
+                                    <span class="quad-label">Bedding Moisture</span>
+                                </div>
+                                <div class="quad-value" id="dash-wet-val">Dry</div>
+                                <span class="quad-status" id="dash-wet-tag">[HYGIENIC]</span>
+                            </div>
+                        </div>
+                        <div class="card-bottom">
+                            <span class="card-footnote">Sensors sampled live &bull; Hysteresis noise filtration</span>
+                            <button class="link-btn" onclick="switchView('sensors')">Adjust &rarr;</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Notifications Timeline Preview -->
+                <div class="apple-card glass-card timeline-card mt-3">
+                    <div class="card-top">
+                        <span class="sub-heading">RECENT ALERTS &amp; EVENTS</span>
+                        <button class="btn btn-sm btn-pink-outline" onclick="switchView('alerts')">View All History &rarr;</button>
+                    </div>
+                    <div id="dash-recent-events" class="timeline-list">
+                        <div class="empty-state">No notifications recorded yet.</div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ================= VIEW 2: CAMERA VISION ================= -->
+            <section id="view-camera" class="spa-view">
+                <div class="section-intro flex-between flex-wrap gap-2">
+                    <div>
+                        <h1 class="view-title">Camera</h1>
+                        <p class="view-desc">Live face and body landmarks run in this browser. Expression cues are approximate and do not identify feelings or assess safety.</p>
+                    </div>
+
+                    <!-- Apple-style Floating Mode Selector -->
+                    <div class="vision-dock glass-panel">
+                        <button class="vision-dock-btn active" id="btn-vis-normal" onclick="setVisionMode('normal')">
+                            &#128065; Normal RGB
+                        </button>
+                        <button class="vision-dock-btn" id="btn-vis-thermal" onclick="setVisionMode('thermal')">
+                            &#128293; Pseudo-Thermal
+                        </button>
+                        <button class="vision-dock-btn" id="btn-vis-wet" onclick="setVisionMode('wet_scanner')">
+                            &#128167; Moisture Scanner
+                        </button>
+                    </div>
+                </div>
+
+                <div class="vision-grid">
+                    <!-- Main Cinematic Viewfinder Card -->
+                    <div class="apple-card glass-card cinematic-card">
+                        <div class="card-top">
+                            <div class="flex-row items-center gap-2">
+                                <span class="badge badge-real">REAL WEBCAM</span>
+                                <span id="cam-status-pill" class="status-chip offline">[CAMERA DISCONNECTED]</span>
+                            </div>
+                            <div class="flex-row items-center gap-2">
+                                <span id="cam-mode-tag" class="status-chip mode">MODE: NORMAL</span>
+                                <span id="cam-live-indicator" class="live-status-dot off"></span>
+                            </div>
+                        </div>
+
+                        <!-- Video Screen Container -->
+                        <div class="viewfinder-stage" id="video-frame-container">
+                            <video id="webcam-video" autoplay playsinline muted></video>
+                            <canvas id="vision-canvas" width="640" height="480"></canvas>
+                            <canvas id="landmark-canvas" width="640" height="480" aria-hidden="true"></canvas>
+                            <canvas id="motion-canvas" width="160" height="120" style="display: none;"></canvas>
+
+                            <div id="baby-insight-panel" class="baby-insight-panel" data-expression="unknown">
+                                <div class="insight-face-icon" aria-hidden="true">
+                                    <svg class="expression-face expression-face-happy" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16"/><circle class="expression-eye" cx="13" cy="16" r="1.4"/><circle class="expression-eye" cx="27" cy="16" r="1.4"/><path d="M12 22c1.5 5 4.2 7.5 8 7.5s6.5-2.5 8-7.5"/></svg>
+                                    <svg class="expression-face expression-face-sad" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16"/><circle class="expression-eye" cx="13" cy="16" r="1.4"/><circle class="expression-eye" cx="27" cy="16" r="1.4"/><path d="M12 29c1.5-5 4.2-7.5 8-7.5s6.5 2.5 8 7.5"/></svg>
+                                    <svg class="expression-face expression-face-neutral" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16"/><circle class="expression-eye" cx="13" cy="16" r="1.4"/><circle class="expression-eye" cx="27" cy="16" r="1.4"/><path d="M13 26h14"/></svg>
+                                </div>
+                                <div class="insight-face-copy">
+                                    <span class="insight-kicker">VISIBLE EXPRESSION CUE</span>
+                                    <strong id="baby-expression-label">Waiting for face</strong>
+                                    <span id="baby-position-label">Body position: waiting</span>
+                                </div>
+                                <span id="baby-vision-status" class="insight-model-status">Starting vision…</span>
+                            </div>
+
+                            <!-- Viewfinder HUD Overlays -->
+                            <div class="cinematic-hud">
+                                <div class="hud-glass-header">
+                                    <span class="hud-metric">&#128340; <span id="hud-time">--:--:--</span></span>
+                                    <span class="hud-metric" id="hud-fps">FPS: 0</span>
+                                    <span id="camera-motion-pill" class="camera-motion-pill off">NO MOTION</span>
+                                    <span class="hud-metric highlight" id="hud-thermal-spot" style="display: none;">SPOT TEMP: 36.6&deg;C</span>
+                                </div>
+
+                                <div class="hud-reticle" id="hud-crosshair" style="display: none;">
+                                    <div class="reticle-ring"></div>
+                                    <span class="reticle-caption">INFANT SKIN SPOT</span>
+                                </div>
+
+                                <div class="hud-anomaly-box" id="hud-wetness-box" style="display: none;">
+                                    <span class="anomaly-caption">&#9888; OPTICAL MOISTURE STAIN DETECTED</span>
+                                </div>
+                            </div>
+
+                            <div id="camera-placeholder" class="camera-standby-poster">
+                                <div class="poster-icon-ring">&#128247;</div>
+                                <h3>Webcam Disconnected</h3>
+                                <p>Connect the camera for motion tracking, face landmarks, and an approximate body-pose overlay.</p>
+                                <button class="btn btn-pink btn-lg" onclick="startWebcam()">Connect Camera</button>
+                            </div>
+
+                            <div id="camera-error-box" class="camera-error-glass" style="display: none;">
+                                <span id="camera-error-text">Camera access blocked.</span>
+                            </div>
+                        </div>
+
+                        <div class="cinematic-bottom-bar">
+                            <div class="camera-btn-group">
+                                <button id="btn-start-camera" class="btn btn-pink" onclick="startWebcam()">Start Camera</button>
+                                <button id="btn-stop-camera" class="btn btn-pink-outline" onclick="stopWebcam()" disabled>Stop Camera</button>
+                                <button id="btn-flip-camera" class="btn btn-pink-outline" onclick="flipCameraFacing()" title="Switch Front / Rear Camera">Flip Camera</button>
+                            </div>
+                            <span class="privacy-pill">Video stays on device &bull; model files load from Google</span>
+                        </div>
+                    </div>
+
+                    <!-- Vision Settings & Anti-Spam Control Island -->
+                    <div class="apple-card glass-card vision-controls-card">
+                        <div class="card-top">
+                            <span class="sub-heading">MOTION TRACKING &amp; ANTI-SPAM</span>
+                            <span class="badge badge-real">ACTIVE FILTER</span>
+                        </div>
+
+                        <div class="motion-status-banner">
+                            <span class="banner-label">Visual Motion Status:</span>
+                            <div id="motion-indicator-badge" class="motion-state-pill no-motion">
+                                [NO MOTION]
+                            </div>
+                        </div>
+
+                        <div class="meter-block mt-3">
+                            <div class="flex-between">
+                                <span class="input-label">Live Visual Variance:</span>
+                                <span id="motion-level-text" class="meter-val-text">0.0%</span>
+                            </div>
+                            <div class="meter-track-glass">
+                                <div id="motion-level-bar" class="meter-fill-pink" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="preset-block mt-3">
+                            <span class="input-label">Anti-Spam Motion Sensitivity:</span>
+                            <div class="preset-pill-group">
+                                <button class="preset-pill" onclick="applyMotionPreset(6)">High (6%)</button>
+                                <button class="preset-pill active" id="preset-btn-balanced" onclick="applyMotionPreset(14)">Balanced (14%)</button>
+                                <button class="preset-pill" onclick="applyMotionPreset(24)">Quiet (24%)</button>
+                            </div>
+                        </div>
+
+                        <div class="slider-block mt-3">
+                            <div class="flex-between">
+                                <label for="motion-sensitivity" class="input-label">Custom Threshold:</label>
+                                <span id="motion-sensitivity-val" class="slider-counter">14%</span>
+                            </div>
+                            <input type="range" id="motion-sensitivity" min="4" max="40" value="14" class="apple-range" oninput="updateMotionSensitivity(this.value)">
+                        </div>
+
+                        <div class="slider-block mt-3">
+                            <div class="flex-between">
+                                <label for="cooldown-slider" class="input-label">Alert Cooldown (Anti-Spam):</label>
+                                <span id="cooldown-val" class="slider-counter">10s</span>
+                            </div>
+                            <input type="range" id="cooldown-slider" min="3" max="30" value="10" step="1" class="apple-range" oninput="updateAlertCooldown(this.value)">
+                            <div class="flex-between range-hint">
+                                <span>Responsive (3s)</span>
+                                <span>Quiet Nursery (30s)</span>
+                            </div>
+                        </div>
+
+                        <div class="toggle-row-glass mt-3">
+                            <label class="apple-switch-row">
+                                <input type="checkbox" id="chk-mute-toasts" onchange="toggleMuteToasts(this.checked)">
+                                <span class="switch-text">Mute floating toast popups (record in log only)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ================= VIEW 3: SIMULATED SENSORS ================= -->
+            <section id="view-sensors" class="spa-view">
+                <div class="section-intro">
+                    <div>
+                        <h1 class="view-title">Sensors</h1>
+                        <p class="view-desc">Simulated hardware controls with threshold alerts and parent notification triggers.</p>
+                    </div>
+                </div>
+
+                <div class="sensors-layout-grid">
+                    <!-- Sensor 1: Cry Detection -->
+                    <div class="apple-card glass-card sensor-interactive-card">
+                        <div class="card-top">
+                            <div class="flex-row items-center gap-2">
+                                <span class="quad-icon">&#128546;</span>
+                                <span class="sub-heading">ACOUSTIC CRY SENSOR</span>
+                            </div>
+                            <span class="badge badge-sim">SIMULATED</span>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-explainer">Monitors vocal crying amplitude. In Automatic mode, detected crying automatically activates the cradle rocking motor.</p>
+                            <div class="state-indicator-box">
+                                <span class="state-title">Crying Status:</span>
+                                <span id="sensor-cry-badge" class="sensor-pill off">[QUIET]</span>
+                            </div>
+                            <button id="btn-toggle-cry" class="btn btn-pink-outline w-100" onclick="toggleSensorCry()">
+                                Simulate Baby Crying
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sensor 2: Baby Movement (PIR) -->
+                    <div class="apple-card glass-card sensor-interactive-card">
+                        <div class="card-top">
+                            <div class="flex-row items-center gap-2">
+                                <span class="quad-icon">&#128062;</span>
+                                <span class="sub-heading">INFANT BODY MOVEMENT</span>
+                            </div>
+                            <span class="badge badge-sim">SIMULATED</span>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-explainer">Passive-infrared motion sensor tracking mattress physical activity, limb movement, and waking restless episodes.</p>
+                            <div class="state-indicator-box">
+                                <span class="state-title">Physical Motion:</span>
+                                <span id="sensor-movement-badge" class="sensor-pill off">[STILL]</span>
+                            </div>
+                            <button id="btn-toggle-movement" class="btn btn-pink-outline w-100" onclick="toggleSensorMovement()">
+                                Simulate Infant Movement
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sensor 3: Temperature -->
+                    <div class="apple-card glass-card sensor-interactive-card span-2">
+                        <div class="card-top">
+                            <div class="flex-row items-center gap-2">
+                                <span class="quad-icon">&#127777;</span>
+                                <span class="sub-heading">CRADLE THERMAL ENVIRONMENT</span>
+                            </div>
+                            <span class="badge badge-sim">SIMULATED</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="temp-dual-panel">
+                                <div class="temp-control-side">
+                                    <div class="flex-between">
+                                        <label for="temp-slider" class="input-label">Live Temperature (10&deg;C &ndash; 45&deg;C):</label>
+                                        <div class="number-input-pill">
+                                            <input type="number" id="temp-number" min="10" max="45" step="0.5" value="27.0" class="clean-number-input" onchange="updateTemperatureInput(this.value)">
+                                            <span class="input-unit">&deg;C</span>
+                                        </div>
+                                    </div>
+                                    <input type="range" id="temp-slider" min="10" max="45" step="0.5" value="27.0" class="apple-range" oninput="updateTemperatureSlider(this.value)">
+                                    <div class="temp-quick-pills">
+                                        <button class="mini-pill" onclick="updateTemperatureSlider(24.0); document.getElementById('temp-slider').value = 24.0;">Cool (24&deg;C)</button>
+                                        <button class="mini-pill" onclick="updateTemperatureSlider(27.0); document.getElementById('temp-slider').value = 27.0;">Optimal (27&deg;C)</button>
+                                        <button class="mini-pill" onclick="updateTemperatureSlider(34.5); document.getElementById('temp-slider').value = 34.5;">Warm (34.5&deg;C)</button>
+                                    </div>
+                                </div>
+
+                                <div class="temp-threshold-side">
+                                    <div class="flex-between">
+                                        <span class="input-label">Warning Threshold:</span>
+                                        <div class="number-input-pill">
+                                            <input type="number" id="thresh-number" min="15" max="45" step="1" value="32.0" class="clean-number-input" onchange="updateThresholdInput(this.value)">
+                                            <span class="input-unit">&deg;C</span>
+                                        </div>
+                                    </div>
+                                    <span class="threshold-caption">Demo limit &bull; Not a validated clinical threshold</span>
+                                    <div class="state-indicator-box mt-2">
+                                        <span class="state-title">Thermal Status:</span>
+                                        <span id="sensor-temp-badge" class="sensor-pill normal">[NORMAL: 27.0&deg;C]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sensor 4: Bedding Wetness & Buzzer -->
+                    <div class="apple-card glass-card sensor-interactive-card span-2">
+                        <div class="card-top">
+                            <div class="flex-row items-center gap-2">
+                                <span class="quad-icon">&#128167;</span>
+                                <span class="sub-heading">BEDDING WETNESS &amp; ALARM BUZZER</span>
+                            </div>
+                            <span class="badge badge-sim">SIMULATED</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="wetness-dual-panel">
+                                <div class="wetness-sub-col">
+                                    <h4>Moisture Sensor</h4>
+                                    <p class="card-explainer">Monitors bedding dampness. Wetness triggers immediate parent alert and activates the physical buzzer alarm.</p>
+                                    <div class="state-indicator-box">
+                                        <span class="state-title">Bedding:</span>
+                                        <span id="sensor-wetness-badge" class="sensor-pill off">[DRY]</span>
+                                    </div>
+                                    <button id="btn-toggle-wetness" class="btn btn-pink-outline" onclick="toggleSensorWetness()">
+                                        Simulate Wet Bedding
+                                    </button>
+                                </div>
+                                <div class="wetness-sub-col">
+                                    <h4>Hardware Alarm Buzzer</h4>
+                                    <p class="card-explainer">Physical audible buzzer module. State is strictly <strong>ACTIVE</strong> only while moisture is present.</p>
+                                    <div class="state-indicator-box">
+                                        <span class="state-title">Buzzer:</span>
+                                        <span id="sensor-buzzer-badge" class="sensor-pill off">[INACTIVE]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ================= VIEW 4: CRADLE MOTOR ================= -->
+            <section id="view-motor" class="spa-view">
+                <div class="section-intro">
+                    <div>
+                        <h1 class="view-title">Motor</h1>
+                        <p class="view-desc">Automatic and manual sway controls for the demo cradle. Motor actions are simulated in software.</p>
+                    </div>
+                </div>
+
+                <div class="motor-layout-grid">
+                    <div class="apple-card glass-card motor-control-card">
+                        <div class="card-top">
+                            <span class="sub-heading">MOTOR COMMAND CENTER</span>
+                            <span class="badge badge-sim">SIMULATED MOTOR</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="control-segment-block">
+                                <span class="input-label">Rocking Automation Mode:</span>
+                                <div class="apple-segmented-tabs">
+                                    <button id="btn-mode-auto" class="seg-tab active" onclick="setMotorMode('auto')">
+                                        AUTOMATIC
+                                    </button>
+                                    <button id="btn-mode-manual" class="seg-tab" onclick="setMotorMode('manual')">
+                                        MANUAL
+                                    </button>
+                                </div>
+                                <p class="mode-caption">
+                                    In <strong>Automatic</strong> mode, rocking starts when crying is detected and stops when quiet. In <strong>Manual</strong> mode, the caregiver has full direct control.
+                                </p>
+                            </div>
+
+                            <div class="manual-buttons-block mt-3">
+                                <span class="input-label">Direct Override (Always Operational):</span>
+                                <div class="button-twin-row">
+                                    <button id="btn-motor-on" class="btn btn-pink flex-1" onclick="setMotorManual('on')">
+                                        Turn Motor ON
+                                    </button>
+                                    <button id="btn-motor-off" class="btn btn-pink-outline flex-1" onclick="setMotorManual('off')">
+                                        Turn Motor OFF
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="motor-hero-state-banner mt-4">
+                                <span class="state-banner-label">Active Motor State:</span>
+                                <span id="motor-status-banner" class="motor-state-text stopped">[MOTOR STOPPED]</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Apple-Style Animated Cradle Visualizer -->
+                    <div class="apple-card glass-card cradle-stage-card">
+                        <div class="card-top">
+                            <span class="sub-heading">PHYSICAL CRADLE VISUALIZER</span>
+                            <span class="badge badge-sim">PHYSICAL SIMULATION</span>
+                        </div>
+
+                        <div class="cradle-pendulum-stage">
+                            <div id="cradle-rig" class="cradle-rig">
+                                <svg class="cradle-vector" viewBox="0 0 240 240">
+                                    <circle cx="120" cy="20" r="6" fill="#ff6b5b" class="neon-pink-filter" />
+                                    <line x1="120" y1="20" x2="65" y2="120" stroke="currentColor" stroke-width="2.2" stroke-dasharray="4,2" opacity="0.6" />
+                                    <line x1="120" y1="20" x2="175" y2="120" stroke="currentColor" stroke-width="2.2" stroke-dasharray="4,2" opacity="0.6" />
+                                    <path d="M 50,130 Q 120,210 190,130 L 180,120 Q 120,185 60,120 Z" fill="currentColor" fill-opacity="0.1" stroke="#ff6b5b" stroke-width="3" />
+                                    <path d="M 60,120 A 60,60 0 0,1 135,70" fill="none" stroke="#ff6b5b" stroke-width="2.5" />
+                                    <ellipse cx="120" cy="155" rx="45" ry="15" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="1.5" />
+                                    <circle cx="100" cy="148" r="9" fill="currentColor" />
+                                    <rect x="108" y="142" width="35" height="18" rx="7" fill="#ff6b5b" />
+                                </svg>
+                            </div>
+
+                            <div class="cradle-caption-box">
+                                <span id="cradle-visual-text" class="cradle-status-caption">Cradle is currently stationary</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ================= VIEW 5: SLEEP & HEALTH (NEW!) ================= -->
+            <section id="view-sleep" class="spa-view">
+                <div class="section-intro flex-between flex-wrap gap-2">
+                    <div>
+                        <h1 class="view-title">Sleep &amp; Health</h1>
+                        <p class="view-desc">Sample sleep summary, respiration estimate, and nap history. All values on this page are demo data.</p>
+                    </div>
+
+                    <a href="/api/health/export" class="btn btn-hero-pink" onclick="exportHealthReport(event)">
+                        &#128196; Export Health Summary
+                    </a>
+                </div>
+
+                <div class="sleep-layout-grid">
+                    <!-- Hero Sleep Score & Live State Banner -->
+                    <div class="apple-card glass-card sleep-hero-card span-2">
+                        <div class="sleep-hero-flex">
+                            <div class="sleep-score-ring-box">
+                                <div class="score-circle-ring">
+                                    <span class="score-num" id="sleep-score-num">94%</span>
+                                    <span class="score-sub">QUALITY</span>
+                                </div>
+                            </div>
+                            <div class="sleep-hero-details">
+                                <div class="flex-row items-center gap-2">
+                                    <span class="sub-heading">CURRENT SLEEP ARCHITECTURE</span>
+                                    <span class="badge badge-sim">CLINICAL ESTIMATE</span>
+                                </div>
+                                <h2 class="sleep-hero-status" id="sleep-hero-status">NREM Deep Sleep</h2>
+                                <p class="sleep-hero-desc">Baby Liam is currently experiencing quiet restorative slow-wave sleep. Heartbeat and breathing are rhythmic and steady.</p>
+                                <div class="sleep-timer-pill">
+                                    <span class="timer-dot"></span>
+                                    <span>Active Sleep Session: <strong id="sleep-session-timer">00h 25m 40s</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Apple Health Style Sleep Vitals Quad -->
+                    <div class="apple-card glass-card">
+                        <div class="card-top">
+                            <span class="sub-heading">DAILY SLEEP TOTAL</span>
+                            <span class="badge badge-sim">8h 16m</span>
+                        </div>
+                        <div class="vital-card-body">
+                            <div class="vital-hero-number" id="sleep-total-hours">8h 16m</div>
+                            <span class="vital-sub-text">Recommended daily goal: 14h 00m</span>
+                            <div class="goal-progress-track mt-2">
+                                <div class="goal-progress-fill" style="width: 59%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="apple-card glass-card">
+                        <div class="card-top">
+                            <span class="sub-heading">RESPIRATION RATE</span>
+                            <span class="badge badge-sim">STEADY</span>
+                        </div>
+                        <div class="vital-card-body">
+                            <div class="vital-hero-number"><span id="sleep-respiration-bpm">34</span> <small>BPM</small></div>
+                            <span class="vital-sub-text">Normal infant range: 30 &ndash; 40 breaths/min</span>
+                            <span class="vital-health-pill normal mt-2">&#10003; Rhythmic Breathing</span>
+                        </div>
+                    </div>
+
+                    <div class="apple-card glass-card">
+                        <div class="card-top">
+                            <span class="sub-heading">NIGHT AWAKENINGS</span>
+                            <span class="badge badge-sim">LOW DISTURBANCE</span>
+                        </div>
+                        <div class="vital-card-body">
+                            <div class="vital-hero-number"><span id="sleep-awakenings-count">2</span> <small>Times</small></div>
+                            <span class="vital-sub-text">Average wake duration: 3.2 minutes</span>
+                            <span class="vital-health-pill normal mt-2">Minimal Disturbance</span>
+                        </div>
+                    </div>
+
+                    <div class="apple-card glass-card">
+                        <div class="card-top">
+                            <span class="sub-heading">SOOTHING EFFICACY</span>
+                            <span class="badge badge-sim">HIGH SUCCESS</span>
+                        </div>
+                        <div class="vital-card-body">
+                            <div class="vital-hero-number"><span id="sleep-soothe-rate">88%</span></div>
+                            <span class="vital-sub-text">Cradle automatically calmed restlessness</span>
+                            <span class="vital-health-pill normal mt-2">Auto-Soothe Calibrated</span>
+                        </div>
+                    </div>
+
+                    <!-- Sleep Cycle Hypnogram Architecture Breakdown -->
+                    <div class="apple-card glass-card span-2">
+                        <div class="card-top">
+                            <span class="sub-heading">SLEEP CYCLE ARCHITECTURE (HYPNOGRAM BREAKDOWN)</span>
+                            <span class="badge badge-sim">SLEEP STAGES</span>
+                        </div>
+                        <div class="card-content">
+                            <!-- Multi-segment visual bar -->
+                            <div class="hypnogram-segmented-bar">
+                                <div class="bar-segment deep-sleep" style="width: 52%;" title="Deep NREM Sleep: 52%"></div>
+                                <div class="bar-segment light-sleep" style="width: 36%;" title="Light REM Sleep: 36%"></div>
+                                <div class="bar-segment restless" style="width: 12%;" title="Restless / Awakenings: 12%"></div>
+                            </div>
+                            <div class="hypnogram-legend mt-2">
+                                <div class="legend-item"><span class="legend-bullet deep"></span> <strong>52% Deep Quiet Sleep (NREM)</strong> &mdash; Tissue recovery &amp; growth</div>
+                                <div class="legend-item"><span class="legend-bullet light"></span> <strong>36% Active Light Sleep (REM)</strong> &mdash; Neural synaptic development</div>
+                                <div class="legend-item"><span class="legend-bullet awake"></span> <strong>12% Movement / Restless</strong> &mdash; Brief repositioning</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Sleep & Nap Sessions -->
+                    <div class="apple-card glass-card span-2">
+                        <div class="card-top">
+                            <span class="sub-heading">TODAY'S NAP &amp; SLEEP SESSIONS</span>
+                            <span class="badge badge-sim">4 SESSIONS RECORDED</span>
+                        </div>
+                        <div class="nap-sessions-list">
+                            <div class="nap-session-row">
+                                <div class="nap-time-badge">&#127749; 08:30 &ndash; 10:15</div>
+                                <div class="nap-info">
+                                    <strong>Morning Nap</strong>
+                                    <span class="nap-duration">Duration: 1h 45m &bull; Quality: Optimal (96%)</span>
+                                </div>
+                                <span class="nap-type-tag">Quiet NREM</span>
+                            </div>
+
+                            <div class="nap-session-row">
+                                <div class="nap-time-badge">&#9728; 12:45 &ndash; 14:30</div>
+                                <div class="nap-info">
+                                    <strong>Midday Nap</strong>
+                                    <span class="nap-duration">Duration: 1h 45m &bull; Quality: Restful (92%)</span>
+                                </div>
+                                <span class="nap-type-tag">Balanced</span>
+                            </div>
+
+                            <div class="nap-session-row">
+                                <div class="nap-time-badge">&#127774; 16:00 &ndash; 17:10</div>
+                                <div class="nap-info">
+                                    <strong>Late Afternoon Nap</strong>
+                                    <span class="nap-duration">Duration: 1h 10m &bull; Quality: Good (89%)</span>
+                                </div>
+                                <span class="nap-type-tag">Light REM</span>
+                            </div>
+
+                            <div class="nap-session-row active">
+                                <div class="nap-time-badge active">&#127769; 19:40 &ndash; Active</div>
+                                <div class="nap-info">
+                                    <strong>Night Sleep (Current)</strong>
+                                    <span class="nap-duration">Active Session &bull; Quality: Deep Rest (95%)</span>
+                                </div>
+                                <span class="nap-type-tag active">Active NREM</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Apple Health Style Pediatric Insights -->
+                    <div class="apple-card glass-card span-2 pediatric-insights-card">
+                        <div class="card-top">
+                            <span class="sub-heading">&#128161; PEDIATRIC SLEEP &amp; HEALTH INSIGHTS</span>
+                            <span class="badge badge-sim">SAMPLE DEMO CONTENT</span>
+                        </div>
+                        <div class="insights-grid">
+                            <div class="insight-item">
+                                <span class="insight-bullet-icon">&#127777;</span>
+                                <div class="insight-text">
+                                    <strong>Nursery Temperature Synergy</strong>
+                                    <p>Illustrative sample only. This prototype does not measure room conditions or establish a relationship between temperature and sleep.</p>
+                                </div>
+                            </div>
+                            <div class="insight-item">
+                                <span class="insight-bullet-icon">&#128564;</span>
+                                <div class="insight-text">
+                                    <strong>Circadian Nap Consistency</strong>
+                                    <p>Illustrative sample only. Sleep stages and nap patterns are not measured or clinically assessed by this prototype.</p>
+                                </div>
+                            </div>
+                            <div class="insight-item">
+                                <span class="insight-bullet-icon">&#9881;</span>
+                                <div class="insight-text">
+                                    <strong>Soothing Intervention Efficacy</strong>
+                                    <p>Illustrative sample only. The cradle control is simulated and no soothing efficacy is measured.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ================= VIEW 6: ALERTS & ACTIVITY ================= -->
+            <section id="view-alerts" class="spa-view">
+                <div class="section-intro flex-between flex-wrap gap-2">
+                    <div>
+                        <h1 class="view-title">Activity</h1>
+                        <p class="view-desc">Timestamped audit trail of simulated sensor alerts, camera vision events, and motor changes.</p>
+                    </div>
+
+                    <button class="btn btn-sm btn-clear-glass" onclick="clearEventHistory()">
+                        Clear History
+                    </button>
+                </div>
+
+                <div class="apple-card glass-card timeline-master-card">
+                    <div class="card-top flex-between flex-wrap gap-2">
+                        <div class="timeline-filters" role="group">
+                            <button class="filter-pill active" data-filter="all" onclick="setEventFilter('all')">All</button>
+                            <button class="filter-pill" data-filter="alerts" onclick="setEventFilter('alerts')">Alerts</button>
+                            <button class="filter-pill" data-filter="motion" onclick="setEventFilter('motion')">Motion</button>
+                            <button class="filter-pill" data-filter="sensors" onclick="setEventFilter('sensors')">Sensors</button>
+                            <button class="filter-pill" data-filter="system" onclick="setEventFilter('system')">System</button>
+                        </div>
+                    </div>
+
+                    <div class="card-content">
+                        <div id="events-log-container" class="timeline-stream">
+                            <div class="empty-state">No events recorded yet.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ================= VIEW 7: MORE & SETTINGS (NEW!) ================= -->
+            <section id="view-more" class="spa-view">
+                <div class="section-intro">
+                    <div>
+                        <h1 class="view-title">More</h1>
+                        <p class="view-desc">Demo infant profile, cradle preferences, mobile connection mode, and diagnostics.</p>
+                    </div>
+                </div>
+
+                <div class="more-layout-grid">
+                    <!-- Infant Profile Card -->
+                    <div class="apple-card glass-card profile-master-card">
+                        <div class="card-top">
+                            <span class="sub-heading">INFANT BIOMETRIC PROFILE</span>
+                            <span class="badge badge-sim">ACTIVE PROFILE</span>
+                        </div>
+                        <div class="profile-hero-row">
+                            <div class="profile-monogram-circle">BL</div>
+                            <div class="profile-details-block">
+                                <h2 class="profile-baby-name" id="profile-name-text">Baby Liam</h2>
+                                <span class="profile-sub-info" id="profile-age-text">4 Months Old &bull; Born July 12, 2026</span>
+                                <div class="profile-pills-row mt-2">
+                                    <span class="mini-profile-chip">Weight: <strong id="profile-weight-text">6.5 kg</strong></span>
+                                    <span class="mini-profile-chip">Pediatrician: <strong id="profile-pediatrician-text">Dr. Elena Rostova</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cradle Soothing Customization -->
+                    <div class="apple-card glass-card cradle-custom-card">
+                        <div class="card-top">
+                            <span class="sub-heading">CRADLE AUTOMATION PREFERENCES</span>
+                            <span class="badge badge-sim">PREFERENCES</span>
+                        </div>
+                        <div class="settings-form">
+                            <!-- Rocking Speed Selection -->
+                            <div class="form-group-apple">
+                                <label class="input-label">Rocking Servo Speed:</label>
+                                <div class="apple-segmented-tabs">
+                                    <button class="seg-tab active" id="btn-speed-gentle" onclick="updateRockingSpeed('gentle')">Gentle (18 RPM)</button>
+                                    <button class="seg-tab" id="btn-speed-moderate" onclick="updateRockingSpeed('moderate')">Moderate (24 RPM)</button>
+                                    <button class="seg-tab" id="btn-speed-calming" onclick="updateRockingSpeed('calming')">Calming (30 RPM)</button>
+                                </div>
+                            </div>
+
+                            <!-- Lullaby Selection -->
+                            <div class="form-group-apple mt-3">
+                                <label class="input-label">Audio Soothing Sound:</label>
+                                <div class="lullaby-chip-group">
+                                    <button class="lullaby-chip active" id="btn-sound-brahms" onclick="updateLullabySound('brahms')">&#127925; Brahms Lullaby</button>
+                                    <button class="lullaby-chip" id="btn-sound-white_noise" onclick="updateLullabySound('white_noise')">&#127788; White Noise</button>
+                                    <button class="lullaby-chip" id="btn-sound-rain" onclick="updateLullabySound('rain')">&#127783; Gentle Rain</button>
+                                    <button class="lullaby-chip" id="btn-sound-ocean" onclick="updateLullabySound('ocean')">&#127754; Ocean Waves</button>
+                                    <button class="lullaby-chip" id="btn-sound-off" onclick="updateLullabySound('off')">&#128263; Muted</button>
+                                </div>
+                            </div>
+
+                            <!-- Ambient Nightlight -->
+                            <div class="form-group-apple mt-3">
+                                <div class="flex-between">
+                                    <label class="input-label">Nursery Ambient Nightlight:</label>
+                                    <span class="slider-counter" id="nightlight-bright-text">45%</span>
+                                </div>
+                                <div class="nightlight-color-swatches mt-1">
+                                    <button class="swatch-btn active" id="swatch-pink" onclick="updateNightlightColor('pink_glow')" style="background: #ff6b5b;" title="Coral Glow"></button>
+                                    <button class="swatch-btn" id="swatch-amber" onclick="updateNightlightColor('warm_amber')" style="background: #ffb703;" title="Warm Amber"></button>
+                                    <button class="swatch-btn" id="swatch-white" onclick="updateNightlightColor('soft_white')" style="background: #ffffff;" title="Soft White"></button>
+                                    <button class="swatch-btn" id="swatch-off" onclick="updateNightlightColor('off')" style="background: #334155;" title="Turn Off"></button>
+                                </div>
+                                <input type="range" min="0" max="100" value="45" id="nightlight-slider" class="apple-range mt-2" oninput="updateNightlightBrightness(this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pediatric Emergency Support Card -->
+                    <div class="apple-card glass-card emergency-card">
+                        <div class="card-top">
+                            <span class="sub-heading">&#9742; PEDIATRIC HEALTHCARE CONTACTS</span>
+                            <span class="badge badge-sim">DIRECT CARE</span>
+                        </div>
+                        <div class="emergency-body">
+                            <div class="doctor-row">
+                                <div class="doctor-icon">&#127973;</div>
+                                <div class="doctor-meta">
+                                    <strong id="card-pediatrician-name">Dr. Elena Rostova</strong>
+                                    <span>Metro Infant Care &amp; Pediatrics &bull; NYC</span>
+                                    <span class="phone-link">+1 (555) 234-5678</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-pink w-100 mt-3" onclick="simulateDoctorCall()">
+                                &#128222; Call Pediatrician (Simulated)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- System Diagnostics & Hardware Telemetry -->
+                    <div class="apple-card glass-card diagnostics-card">
+                        <div class="card-top">
+                            <span class="sub-heading">HARDWARE SYSTEM DIAGNOSTICS</span>
+                            <span class="badge badge-sim">HARDWARE v2.4.1</span>
+                        </div>
+                        <div class="diag-metrics-grid">
+                            <div class="diag-item">
+                                <span class="diag-label">Mains Power Supply:</span>
+                                <span class="diag-val">&#128268; AC Connected (100% Battery Backup)</span>
+                            </div>
+                            <div class="diag-item">
+                                <span class="diag-label">Wi-Fi Telemetry Link:</span>
+                                <span class="diag-val">&#128246; Excellent (-42 dBm, 5 GHz)</span>
+                            </div>
+                            <div class="diag-item">
+                                <span class="diag-label">Microcontroller Simulation:</span>
+                                <span class="diag-val">&#9881; Python State Engine (OK)</span>
+                            </div>
+                            <div class="diag-item">
+                                <span class="diag-label">Computer Vision Pipeline:</span>
+                                <span class="diag-val">&#128065; Multi-Modal Canvas Engine (Ready)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Runtime & Flask Server Sync Card -->
+                    <div class="apple-card glass-card mobile-sync-card span-2">
+                        <div class="card-top">
+                            <span class="sub-heading">MOBILE APP RUNTIME &amp; SERVER SYNC</span>
+                            <span class="badge badge-sim" id="runtime-mode-badge">AUTO</span>
+                        </div>
+                        <p class="card-explainer">
+                            Run the simulated cradle directly on your phone (no PC required) or connect to a running Flask server on your Wi-Fi/cloud.
+                        </p>
+                        <div class="runtime-mode-grid">
+                            <div class="form-field">
+                                <label for="runtime-mode-select">Data Mode</label>
+                                <select id="runtime-mode-select" class="apple-input">
+                                    <option value="auto">Automatic (Standalone on Phone / Server on Web)</option>
+                                    <option value="standalone">Standalone On-Device Simulation (Offline)</option>
+                                    <option value="server">Connect to Flask Server URL</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="runtime-server-url">Optional Flask Server URL</label>
+                                <input type="url" id="runtime-server-url" class="apple-input" placeholder="e.g. http://192.168.1.20:5000">
+                            </div>
+                        </div>
+                        <div class="runtime-actions-row">
+                            <button type="button" class="btn btn-pink" onclick="saveRuntimeConnection()">Apply Connection Mode</button>
+                            <span class="card-footnote" id="runtime-mode-desc">Active runtime detected automatically.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ================= CAREGIVER AUTHENTICATION MODAL ================= -->
+    <div id="auth-modal" class="modal-backdrop-glass" style="display: none;">
+        <div class="modal-card-glass">
+            <div class="modal-header-row">
+                <div class="flex-row items-center gap-2">
+                    <span class="modal-icon-brand">&#128106;</span>
+                    <h3 class="modal-heading">Caregiver Account</h3>
+                </div>
+                <button class="modal-close-icon" onclick="closeAuthModal()" aria-label="Close">&times;</button>
+            </div>
+
+            <!-- Apple-style Modal Tabs -->
+            <div class="modal-tab-row">
+                <button class="modal-tab-btn active" id="tab-btn-signin" onclick="switchAuthTab('signin')">Sign In</button>
+                <button class="modal-tab-btn" id="tab-btn-register" onclick="switchAuthTab('register')">Register</button>
+                <button class="modal-tab-btn" id="tab-btn-guest" onclick="switchAuthTab('guest')">Quick Demo</button>
+            </div>
+
+            <div class="modal-form-area">
+                <!-- Tab 1: Sign In -->
+                <form id="form-signin" onsubmit="handleSignIn(event)">
+                    <div class="form-field">
+                        <label for="signin-email">Caregiver Email</label>
+                        <input type="email" id="signin-email" class="apple-input" value="parent@smartcradle.com" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="signin-password">Password</label>
+                        <input type="password" id="signin-password" class="apple-input" autocomplete="current-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-pink w-100 mt-2">Sign In</button>
+                </form>
+
+                <!-- Tab 2: Register -->
+                <form id="form-register" style="display: none;" onsubmit="handleRegister(event)">
+                    <div class="form-field">
+                        <label for="reg-name">Caregiver Name</label>
+                        <input type="text" id="reg-name" class="apple-input" placeholder="e.g. John Doe" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="reg-email">Email Address</label>
+                        <input type="email" id="reg-email" class="apple-input" placeholder="name@example.com" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="reg-password">Password (min 8 characters)</label>
+                        <input type="password" id="reg-password" class="apple-input" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="reg-role">Role</label>
+                        <select id="reg-role" class="apple-input">
+                            <option value="Parent / Primary Caregiver">Parent / Primary Caregiver</option>
+                            <option value="Pediatric Nurse">Pediatric Nurse</option>
+                            <option value="Guardian">Family Guardian</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-pink w-100 mt-2">Create Account</button>
+                </form>
+
+                <!-- Tab 3: Quick Demo Access -->
+                <div id="panel-guest" style="display: none;" class="guest-access-panel">
+                    <p class="guest-explainer">For practical evaluation or demo reviews, enter with 1-click without entering passwords.</p>
+                    <button class="btn btn-pink w-100" onclick="handleGuestDemo()">Enter as Evaluation Guest &rarr;</button>
+                </div>
+            </div>
+
+            <div class="modal-bottom-row">
+                <span id="auth-status-msg" class="auth-status-caption">Signed in as Sarah Miller</span>
+                <button class="btn btn-sm btn-pink-outline" onclick="handleSignOut()">Sign Out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Preview Modal (fallback for mobile export) -->
+    <div id="report-modal" class="modal-backdrop-glass" style="display: none;">
+        <div class="modal-card-glass modal-report-card">
+            <div class="modal-header-row">
+                <h3 class="modal-heading">Pediatric Health Summary</h3>
+                <button class="modal-close-icon" onclick="closeReportModal()" aria-label="Close">&times;</button>
+            </div>
+            <pre id="report-modal-text" class="report-preview-pre"></pre>
+            <div class="modal-bottom-row">
+                <button type="button" class="btn btn-sm btn-pink" onclick="copyReportText()">Copy Summary</button>
+                <button type="button" class="btn btn-sm btn-pink-outline" onclick="closeReportModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Hot-Pink Toast Notifications Container -->
+    <div id="toast-container" class="toast-stack-container"></div>
+
+    <!-- Dual-Mode Runtime & Application Script -->
+    <script src="/static/js/mobile-engine.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

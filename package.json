@@ -1,0 +1,17 @@
+{
+  "name": "smartcradle-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SmartCradle Android Capacitor wrapper and standalone mobile bundle",
+  "scripts": {
+    "sync:www": "node scripts/prepare-mobile.mjs",
+    "sync:android": "node scripts/prepare-mobile.mjs && npx cap sync android",
+    "android:apk": "node scripts/prepare-mobile.mjs && npx cap sync android && node -e \"const { execSync } = require('child_process'); const cmd = process.platform === 'win32' ? 'gradlew.bat assembleDebug' : './gradlew assembleDebug'; execSync(cmd, { cwd: 'android', stdio: 'inherit' });\""
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/camera": "^8.2.6",
+    "@capacitor/cli": "^8.6.0",
+    "@capacitor/core": "^8.6.0"
+  }
+}
